@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alert Email</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #F1F2F2;
+      margin: 0;
+      padding: 0;
+    }
+
+    .email-container {
+      background-color: white;
+      padding: 30px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    hr {
+      border: none;
+      border-top: 2px solid #8E8E8E;
+      margin: 10px 0;
+    }
+
+    .footer {
+      margin-top: 10px;
+      color: #8E8E8E;
+      font-size: 70%;
+    }
+  </style>
+</head>
+<body>
+  <table class="email-container">
+    <tr>
+      <td>
+        <p><img src="cid:logo"></p>
+        <hr>
+        <p>Dear ${FIRST_NAME},<p>
+        <p>I am reaching out to bring your attention to the critical and high vulnerabilities that have been identified by the CIS Vulnerability Management Team. Attached to this email, you will find a spreadsheet containing detailed information about these vulnerabilities, which have been detected during the recent Qualys scanning process. It is crucial that these vulnerabilities are addressed promptly due to their severity.</p>
+        <p>Please take note of the following breakdown of the counts for critical and high vulnerabilities:</p>
+        <ul>
+          <li>Critical vulnerabilities: <b>${CRITICAL_NUMBER}</b></li>
+          <li>High vulnerabilities: <b>${HIGH_NUMBER}</b></li>
+        </ul>
+        <p>Thank you for your attention to this matter, and your cooperation in addressing these vulnerabilities promptly is greatly appreciated.</p>
+        <p>Best regards,</p>
+        <p>China Digital Operations</p>
+        <hr>
+        <div class="footer">
+          <span>Please do not reply directly to this email as your response will not be received.</span>
+          <br>
+          <span>&copy; ThermoFisher Scientific</span>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
