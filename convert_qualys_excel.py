@@ -22,7 +22,7 @@ def get_it_contact(server_list, server_name):
 
 
 def get_server_contact():
-    vul_database = VulDatabase()
+    vul_database = VulDatabase('VUL_DATABASE')
     return vul_database.get_on_premise_server_contact()
 
 

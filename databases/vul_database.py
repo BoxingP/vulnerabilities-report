@@ -3,8 +3,8 @@ from databases.database_schema import OnPremiseServer
 
 
 class VulDatabase(Database):
-    def __init__(self):
-        super(VulDatabase, self).__init__()
+    def __init__(self, name):
+        super(VulDatabase, self).__init__(name)
 
     def insert_on_premise_server_info(self, name, contact):
         new_server_info = OnPremiseServer(
