@@ -6,3 +6,16 @@ CREATE TABLE on_premise_server (
     it_contact VARCHAR(255),
     updated_time TIMESTAMP DEFAULT current_timestamp
 );
+
+CREATE TABLE vulnerabilities_statistic (
+    id SERIAL PRIMARY KEY,
+    server_id INT not null,
+    severity_1 INT,
+    severity_2 INT,
+    severity_3 INT,
+    severity_4 INT,
+    severity_5 INT,
+    updated_time TIMESTAMP DEFAULT current_timestamp,
+    CONSTRAINT fk_server_id FOREIGN KEY(server_id) REFERENCES on_premise_server(id),
+    CONSTRAINT uk_server_id UNIQUE(server_id)
+);

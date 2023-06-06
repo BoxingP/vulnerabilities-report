@@ -8,6 +8,11 @@ from databases.vul_database import VulDatabase
 from emails.emails import Emails
 
 
+def store_vulnerabilities_statistic(data):
+    vul_database = VulDatabase('VUL_DATABASE')
+    vul_database.insert_or_update_vulnerabilities_statistic(data)
+
+
 def format_emails(contacts):
     values = re.split(r'[;\n]', contacts)
     emails = [value.strip() for value in values if re.match(r'[^@\s]+@[^@\s]+\.[^@\s]+', value)]
@@ -72,5 +77,6 @@ for name, group in groups:
             for severity, count in severity_counts.items()
         ]
     }
+    store_vulnerabilities_statistic(summary)
     if it_contact:
         Emails().send_email(summary)
