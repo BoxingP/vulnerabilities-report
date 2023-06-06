@@ -6,13 +6,15 @@ from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
+from decouple import config as decouple_config
+
 
 class Emails(object):
     def __init__(self):
-        self.smtp_server = ''
-        self.port =
-        self.sender_email = ''
-        self.subject = ''
+        self.smtp_server = decouple_config('SMTP_SERVER')
+        self.port = decouple_config('SMTP_PORT', cast=int)
+        self.sender_email = decouple_config('EMAIL_SENDER')
+        self.subject = decouple_config('EMAIL_SUBJECT')
         with open(os.path.join(os.path.dirname(__file__), 'logo.png'), 'rb') as file:
             self.logo_img = file.read()
         with open(os.path.join(os.path.dirname(__file__), 'email_template.html'), 'r', encoding='UTF-8') as file:
