@@ -10,10 +10,13 @@ class VulDatabase(Database):
     def __init__(self, name):
         super(VulDatabase, self).__init__(name)
 
-    def insert_on_premise_server_info(self, name, contact):
+    def insert_on_premise_server_info(self, name, application_name, it_contact, os_info, updated_by):
         new_server_info = OnPremiseServer(
             server_name=name,
-            it_contact=contact
+            application_name=application_name,
+            it_contact=it_contact,
+            os_info=os_info,
+            updated_by=updated_by
         )
         self.session.add(new_server_info)
         self.session.commit()

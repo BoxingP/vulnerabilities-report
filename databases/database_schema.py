@@ -13,8 +13,12 @@ class OnPremiseServer(Base):
     id = Column(Integer, primary_key=True, nullable=False)
     server_name = Column(String, nullable=True)
     application_name = Column(String, nullable=True)
-    os_info = Column(String, nullable=True)
+    environment = Column(String, nullable=True)
+    itbp_contact = Column(String, nullable=True)
+    business_contact = Column(String, nullable=True)
     it_contact = Column(String, nullable=True)
+    os_info = Column(String, nullable=True)
+    updated_by = Column(String, nullable=True)
     updated_time = Column(Time, default=datetime.datetime.utcnow() + datetime.timedelta(hours=8), nullable=True)
 
 
