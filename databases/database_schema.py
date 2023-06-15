@@ -12,6 +12,7 @@ class OnPremiseServer(Base):
     __tablename__ = 'on_premise_server'
     id = Column(Integer, primary_key=True, nullable=False)
     server_name = Column(String, nullable=True)
+    ip_address = Column(String, nullable=True)
     application_name = Column(String, nullable=True)
     environment = Column(String, nullable=True)
     itbp_contact = Column(String, nullable=True)

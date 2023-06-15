@@ -1,6 +1,7 @@
 CREATE TABLE on_premise_server (
     id SERIAL PRIMARY KEY,
     server_name VARCHAR(255),
+    ip_address VARCHAR(255),
     application_name VARCHAR(255),
     environment VARCHAR(255),
     itbp_contact VARCHAR(255),

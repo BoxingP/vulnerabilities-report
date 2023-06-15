@@ -1,6 +1,6 @@
 import datetime
 
-from sqlalchemy import func, exc
+from sqlalchemy import func, exc, update
 
 from databases.database import Database
 from databases.database_schema import OnPremiseServer, VulnerabilitiesStatistic
@@ -10,16 +10,48 @@ class VulDatabase(Database):
     def __init__(self, name):
         super(VulDatabase, self).__init__(name)
 
-    def insert_on_premise_server_info(self, name, application_name, it_contact, os_info, updated_by):
+    def update_column(self, server_id, column_name, new_value, updated_by):
+        current_value = self.session.query(getattr(OnPremiseServer, column_name)).filter(
+            OnPremiseServer.id == server_id).scalar()
+        if current_value is None or current_value == 'NaN' or (
+                column_name == 'it_contact' and '@' not in current_value):
+            query = update(OnPremiseServer).where(OnPremiseServer.id == server_id).values(
+                **{column_name: new_value}, updated_by=updated_by,
+                updated_time=datetime.datetime.utcnow() + datetime.timedelta(hours=8))
+            self.session.execute(query)
+            self.session.commit()
+
+    def insert_on_premise_server_info(self, name, ip_address=None, application_name=None, environment=None,
+                                      it_contact=None, os_info=None, updated_by=None):
         new_server_info = OnPremiseServer(
             server_name=name,
+            ip_address=ip_address,
             application_name=application_name,
+            environment=environment,
             it_contact=it_contact,
             os_info=os_info,
-            updated_by=updated_by
+            updated_by=updated_by,
+            updated_time=datetime.datetime.utcnow() + datetime.timedelta(hours=8)
         )
         self.session.add(new_server_info)
         self.session.commit()
+
+    def insert_or_update_on_premise_server_info(self, name, ip_address=None, application_name=None, environment=None,
+                                                it_contact=None, os_info=None, updated_by=None):
+        server_name = name.lower()
+        query = self.session.query(OnPremiseServer.id).filter(
+            func.lower(OnPremiseServer.server_name).ilike(server_name))
+        server_id = query.scalar()
+        if server_id is None:
+            self.insert_on_premise_server_info(name=name, ip_address=ip_address, application_name=application_name,
+                                               environment=environment, it_contact=it_contact, os_info=os_info,
+                                               updated_by=updated_by)
+        else:
+            self.update_column(server_id, 'ip_address', ip_address, updated_by)
+            self.update_column(server_id, 'application_name', application_name, updated_by)
+            self.update_column(server_id, 'environment', environment, updated_by)
+            self.update_column(server_id, 'it_contact', it_contact, updated_by)
+            self.update_column(server_id, 'os_info', os_info, updated_by)
 
     def get_on_premise_server_contact(self):
         results = self.session.query(OnPremiseServer.server_name, OnPremiseServer.it_contact).all()
