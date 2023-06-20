@@ -39,3 +39,7 @@ vul_database = VulDatabase('VUL_DATABASE')
 for value in values:
     vul_database.insert_or_update_on_premise_server_info(
         name=value[0], ip_address=value[1], it_contact=value[2], os_info=value[3], updated_by='cis list')
+
+vul_database.update_server_name_to_uppercase()
+vul_database.remove_meaningless_server(['localhost'])
+vul_database.replace_empty_to_null()

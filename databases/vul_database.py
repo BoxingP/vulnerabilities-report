@@ -1,6 +1,6 @@
 import datetime
 
-from sqlalchemy import func, exc, update
+from sqlalchemy import func, exc, update, inspect, or_
 
 from databases.database import Database
 from databases.database_schema import OnPremiseServer, VulnerabilitiesStatistic
@@ -103,3 +103,23 @@ class VulDatabase(Database):
                 self.session.refresh(existing_statistic)
             else:
                 print("An error occurred during the insert or update vulnerabilities statistic:", str(e))
+
+    def update_server_name_to_uppercase(self):
+        stmt = update(OnPremiseServer).values(server_name=func.upper(OnPremiseServer.server_name))
+        self.session.execute(stmt)
+        self.session.commit()
+
+    def remove_meaningless_server(self, servers):
+        query = self.session.query(OnPremiseServer).filter(
+            or_(*(OnPremiseServer.server_name.ilike(server) for server in servers))
+        )
+        query.delete(synchronize_session=False)
+        self.session.commit()
+        self.session.close()
+
+    def replace_empty_to_null(self):
+        query = (update(OnPremiseServer).where(
+            (OnPremiseServer.application_name == 'NaN') | (OnPremiseServer.it_contact == 'NaN') | (
+                    OnPremiseServer.os_info == 'NaN')).values(application_name=None, it_contact=None, os_info=None))
+        self.session.execute(query)
+        self.session.commit()
