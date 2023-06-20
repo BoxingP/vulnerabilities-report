@@ -118,8 +118,9 @@ class VulDatabase(Database):
         self.session.close()
 
     def replace_empty_to_null(self):
-        query = (update(OnPremiseServer).where(
-            (OnPremiseServer.application_name == 'NaN') | (OnPremiseServer.it_contact == 'NaN') | (
-                    OnPremiseServer.os_info == 'NaN')).values(application_name=None, it_contact=None, os_info=None))
-        self.session.execute(query)
+        column_names = ['application_name', 'it_contact', 'os_info']
+        for column_name in column_names:
+            query = update(OnPremiseServer).where(getattr(OnPremiseServer, column_name) == 'NaN').values(
+                **{column_name: None})
+            self.session.execute(query)
         self.session.commit()
