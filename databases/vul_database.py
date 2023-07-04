@@ -55,7 +55,7 @@ class VulDatabase(Database):
 
     def get_on_premise_server_contact(self):
         results = self.session.query(OnPremiseServer.server_name, OnPremiseServer.it_contact).all()
-        data = [{'server_name': server_name, 'it_contact': it_contact} for server_name, it_contact in results]
+        data = [{'server_name': server_name, 'contact_email': it_contact} for server_name, it_contact in results]
         return data
 
     def insert_or_update_vulnerabilities_statistic(self, data):
@@ -112,6 +112,18 @@ class VulDatabase(Database):
                 self.session.refresh(existing_statistic)
             else:
                 print("An error occurred during the insert or update vulnerabilities statistic:", str(e))
+
+    def get_vulnerabilities_statistic(self, server_name, year, month):
+        statistics = self.session.query(VulnerabilitiesStatistic).join(OnPremiseServer).filter(
+            func.lower(OnPremiseServer.server_name).ilike(server_name.lower()),
+            VulnerabilitiesStatistic.year == year,
+            VulnerabilitiesStatistic.month == month
+        ).first()
+        if statistics:
+            return [statistics.severity_1, statistics.severity_2, statistics.severity_3, statistics.severity_4,
+                    statistics.severity_5]
+        else:
+            return []
 
     def update_server_name_to_uppercase(self):
         stmt = update(OnPremiseServer).values(server_name=func.upper(OnPremiseServer.server_name))

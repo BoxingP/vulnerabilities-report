@@ -38,12 +38,13 @@ class Emails(object):
         html_part = MIMEMultipart("related")
         first_names = self.extract_names(data['contact_email'])
         self.html = self.html.replace('${FIRST_NAME}', first_names)
-        severity_totals = {
-            item['level']: item['total']
-            for item in data['vulnerabilities_severity']
-        }
-        self.html = self.html.replace('${CRITICAL_NUMBER}', str(severity_totals.get(5, 0)))
-        self.html = self.html.replace('${HIGH_NUMBER}', str(severity_totals.get(4, 0)))
+        if data['vulnerabilities_severity']:
+            high_number = data['vulnerabilities_severity'][3]
+            critical_number = data['vulnerabilities_severity'][4]
+        else:
+            high_number = critical_number = 0
+        self.html = self.html.replace('${HIGH_NUMBER}', str(high_number))
+        self.html = self.html.replace('${CRITICAL_NUMBER}', str(critical_number))
         html_part.attach(MIMEText(self.html, "html"))
         logo_image = MIMEImage(self.logo_img)
         logo_image.add_header('Content-ID', '<logo>')
