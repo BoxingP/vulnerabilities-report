@@ -20,7 +20,10 @@ CREATE TABLE vulnerabilities_statistic (
     severity_3 INT,
     severity_4 INT,
     severity_5 INT,
+    year INT,
+    month INT,
+    day INT,
     updated_time TIMESTAMP DEFAULT current_timestamp,
     CONSTRAINT fk_server_id FOREIGN KEY(server_id) REFERENCES on_premise_server(id),
-    CONSTRAINT uk_server_id UNIQUE(server_id)
+    CONSTRAINT uk_server_date UNIQUE(server_id, year, month, day)
 );

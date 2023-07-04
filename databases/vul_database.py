@@ -1,6 +1,6 @@
 import datetime
 
-from sqlalchemy import func, exc, update, inspect, or_
+from sqlalchemy import func, exc, update, or_
 
 from databases.database import Database
 from databases.database_schema import OnPremiseServer, VulnerabilitiesStatistic
@@ -63,6 +63,12 @@ class VulDatabase(Database):
         query = self.session.query(OnPremiseServer.id).filter(
             func.lower(OnPremiseServer.server_name).ilike(server_name))
         server_id = query.scalar()
+        if server_id is None:
+            print(f"{server_name} related information does not exist.")
+            return
+        year = data['year']
+        month = data['month']
+        day = data['day']
         severity_1 = severity_2 = severity_3 = severity_4 = severity_5 = 0
         for severity_data in data['vulnerabilities_severity']:
             level = severity_data['level']
@@ -83,7 +89,10 @@ class VulDatabase(Database):
             severity_2=severity_2,
             severity_3=severity_3,
             severity_4=severity_4,
-            severity_5=severity_5
+            severity_5=severity_5,
+            year=year,
+            month=month,
+            day=day
         )
         try:
             self.session.add(vulnerabilities_statistic)
@@ -91,7 +100,7 @@ class VulDatabase(Database):
         except exc.IntegrityError as e:
             self.session.rollback()
             existing_statistic = self.session.query(VulnerabilitiesStatistic).filter_by(
-                server_id=server_id).one_or_none()
+                server_id=server_id, year=year, month=month, day=day).one_or_none()
             if existing_statistic is not None:
                 existing_statistic.severity_1 = severity_1
                 existing_statistic.severity_2 = severity_2

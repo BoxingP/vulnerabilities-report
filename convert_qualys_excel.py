@@ -44,6 +44,23 @@ if len(sys.argv) < 2:
     print("Please provide the report file path as an argument.")
     sys.exit(1)
 data_file = sys.argv[1]
+
+
+def get_date_from_filename(file):
+    pattern = r'(\d{4})(\d{2})(\d{2})'
+    match = re.search(pattern, file)
+    if match:
+        year = match.group(1)
+        month = match.group(2)
+        day = match.group(3)
+    else:
+        year = ''
+        month = ''
+        day = ''
+    return year, month, day
+
+
+date = get_date_from_filename(data_file)
 output_directory = os.path.abspath(os.sep.join([os.path.abspath(os.sep), 'tmp', 'qualys-reports']))
 if not os.path.exists(output_directory):
     os.makedirs(output_directory)
@@ -70,6 +87,9 @@ for name, group in groups:
 
     summary = {
         "server_name": server_name,
+        "year": date[0],
+        "month": date[1],
+        "day": date[2],
         "contact_email": it_contact,
         "report_path": file_path,
         "vulnerabilities_severity": [

@@ -32,4 +32,7 @@ class VulnerabilitiesStatistic(Base):
     severity_3 = Column(Integer, nullable=True)
     severity_4 = Column(Integer, nullable=True)
     severity_5 = Column(Integer, nullable=True)
+    year = Column(Integer)
+    month = Column(Integer)
+    day = Column(Integer)
     updated_time = Column(Time, default=datetime.datetime.utcnow() + datetime.timedelta(hours=8), nullable=True)
